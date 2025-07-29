@@ -101,6 +101,9 @@ class Post
         return $this->comments;
     }
 
+    // Este método no es necesario ya que tenemos addComment y removeComment
+    // La propiedad se llama 'comments' (plural) no 'comment' (singular)
+
     public function addComment(Comment $comment): static
     {
         if (!$this->comments->contains($comment)) {
