@@ -33,8 +33,10 @@ final class PostFactory extends PersistentProxyObjectFactory
     {
         return [
             'category' => CategoryFactory::new(),
-            'content' => self::faker()->sentence(),
-            'slug' => self::faker()->sentence(),
+            'content' => $title = self::faker()->sentence(),
+            'slug' => strtolower(
+                str_replace(' ', '-', $title)
+            ),
             'title' => self::faker()->text(255),
         ];
     }
