@@ -33,7 +33,7 @@ final class CommentFactory extends PersistentProxyObjectFactory
     {
         return [
             'content' => self::faker()->text(),
-            'post' => PostFactory::new(),
+            'user'    => UserFactory::random(),
         ];
     }
 

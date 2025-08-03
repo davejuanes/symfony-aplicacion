@@ -2,13 +2,13 @@
 
 namespace App\Factory;
 
-use App\Entity\Post;
+use App\Entity\User;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Post>
+ * @extends PersistentProxyObjectFactory<User>
  */
-final class PostFactory extends PersistentProxyObjectFactory
+final class UserFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -21,7 +21,7 @@ final class PostFactory extends PersistentProxyObjectFactory
 
     public static function class(): string
     {
-        return Post::class;
+        return User::class;
     }
 
     /**
@@ -32,12 +32,10 @@ final class PostFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'category' => CategoryFactory::new(),
-            'content' => $title = self::faker()->sentence(),
-            'slug' => strtolower(
-                str_replace(' ', '-', $title)
-            ),
-            'title' => self::faker()->text(255),
+            'email' => self::faker()->email(),
+            'roles' => ['ROLE_USER'],
+            'name' => self::faker()->name(),
+            'password' => '123456789',
         ];
     }
 
@@ -47,12 +45,7 @@ final class PostFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function(Post $post): void {
-                // Crea de 0 a 8 comentarios para cada post
-                CommentFactory::createMany(rand(0, 8), [
-                    'post' => $post,
-                    // 'user' será asignado automáticamente por defaults()
-                ]);
-            });
+            // ->afterInstantiate(function(User $user): void {})
+        ;
     }
 }
