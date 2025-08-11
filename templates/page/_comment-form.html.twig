@@ -2,7 +2,8 @@
     <p>
        Comentar como <strong>{{ app.user.name }}</strong>
     </p>
-    {{ form(form) }}
+    {{ form(form, {'action': path('app_comment_new', {'id': post.id})}) }}
+
 {% else %}
     <a href="{{ path('app_login') }}">Login</a>
 {% endif %}

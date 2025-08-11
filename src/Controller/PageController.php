@@ -3,12 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Comment;
+
 use App\Repository\PostRepository;
 
 use App\Form\CommentType;
 
+use Doctrine\ORM\EntityManagerInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class PageController extends AbstractController
@@ -25,6 +30,29 @@ final class PageController extends AbstractController
     public function post(Post $post): Response
     {
         $form = $this->createForm(CommentType::class);
+
+        return $this->render('page/post.html.twig', [
+            'post' => $post,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/nuevo-comentario/{id}', name: 'app_comment_new')]
+    public function comment(Post $post, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $comment = new Comment();
+        $comment->setUser($this->getUser());
+        $comment->setPost($post);
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post', ['id' => $post->getId()]);
+        }
 
         return $this->render('page/post.html.twig', [
             'post' => $post,
